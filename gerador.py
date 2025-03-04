@@ -1,27 +1,32 @@
-#   _____ ______ _____            _____   ____  _____      _   _ _____ _______ _____   ____  
-#  / ____|  ____|  __ \     /\   |  __ \ / __ \|  __ \    | \ | |_   _|__   __|  __ \ / __ \ 
-# | |  __| |__  | |__) |   /  \  | |  | | |  | | |__) |   |  \| | | |    | |  | |__) | |  | |
-# | | |_ |  __| |  _  /   / /\ \ | |  | | |  | |  _  /    | . ` | | |    | |  |  _  /| |  | |
-# | |__| | |____| | \ \  / ____ \| |__| | |__| | | \ \    | |\  |_| |_   | |  | | \ \| |__| |
-#  \_____|______|_|  \_\/_/    \_\_____/ \____/|_|  \_\   |_| \_|_____|  |_|  |_|  \_\\____/ 
-
 from time import localtime, strftime, sleep
-from colorama import Fore
+from colorama import Fore, init
 import requests
 import random
 import string
 import os
 
+# Inicializa o colorama
+init(autoreset=True)
+
+# Função para alternar as cores
+def alternating_colors(text):
+    color_sequence = [Fore.MAGENTA, Fore.BLACK, Fore.BLUE]  # Rosa, Preto, Azul
+    result = ""
+    for i, char in enumerate(text):
+        result += color_sequence[i % len(color_sequence)] + char
+    return result
+
 # Adiciona a impressão do título no início do código
 def print_title():
-    print("""
+    title = """
    _____ ______ _____            _____   ____  _____      _   _ _____ _______ _____   ____  
   / ____|  ____|  __ \     /\   |  __ \ / __ \|  __ \    | \ | |_   _|__   __|  __ \ / __ \ 
  | |  __| |__  | |__) |   /  \  | |  | | |  | | |__) |   |  \| | | |    | |  | |__) | |  | |
  | | |_ |  __| |  _  /   / /\ \ | |  | | |  | |  _  /    | . ` | | |    | |  |  _  /| |  | |
  | |__| | |____| | \ \  / ____ \| |__| | |__| | | \ \    | |\  |_| |_   | |  | | \ \| |__| |
   \_____|______|_|  \_\/_/    \_\_____/ \____/|_|  \_\   |_| \_|_____|  |_|  |_|  \_\\____/ 
-    """)
+    """
+    print(alternating_colors(title))
 
 # Exibe o título ao iniciar o programa
 print_title()
@@ -82,22 +87,22 @@ class SapphireGen:
                 ).status_code
                 if req == 200:
                     print(
-                        f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] discord.gift/{code} | válido"
+                        alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | válido")
                     )
                     open("./data/valid.txt", "a").write(f"{code}\n")
                 if req == 404:
                     print(
-                        f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] discord.gift/{code} | inválido"
+                        alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | inválido")
                     )
                 if req == 429:
                     print(
-                        f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] discord.gift/{code} | taxa limitada"
+                        alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | taxa limitada")
                     )
             except Exception as e:
-                print(f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] {e}")
+                print(alternating_colors(f"[{strftime('%H:%M', localtime())}] {e}"))
 
         print(
-            f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] Verificação concluída com sucesso: {this.codes} códigos."
+            alternating_colors(f"[{strftime('%H:%M', localtime())}] Verificação concluída com sucesso: {this.codes} códigos.")
         )
         sleep(1.5)
         os.system("clear")
@@ -105,18 +110,18 @@ class SapphireGen:
 if __name__ == "__main__":
     while True:
         code_type = input(
-            f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] Tipo de Código (boost, classic): "
+            alternating_colors(f"[{strftime('%H:%M', localtime())}] Tipo de Código (boost, classic): ")
         )
         prox = input(
-            f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] Usar proxies? (True, False): "
+            alternating_colors(f"[{strftime('%H:%M', localtime())}] Usar proxies? (True, False): ")
         )
         if prox == "True":
             scrape_proxy = input(
-                f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] Coletar proxies? (True, False): "
+                alternating_colors(f"[{strftime('%H:%M', localtime())}] Coletar proxies? (True, False): ")
             )
         else:
             scrape_proxy = False
         codes = input(
-            f"{Fore.BLUE}[{strftime('%H:%M', localtime())}] Número de códigos: "
+            alternating_colors(f"[{strftime('%H:%M', localtime())}] Número de códigos: ")
         )
         SapphireGen(code_type, prox, codes).generate(scrape=scrape_proxy)
