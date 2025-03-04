@@ -16,6 +16,19 @@ def alternating_colors(text):
         result += color_sequence[i % len(color_sequence)] + char
     return result
 
+# Função para centralizar o texto
+def center_text(text):
+    terminal_width = os.get_terminal_size().columns  # Obtém a largura do terminal
+    lines = text.split("\n")  # Divide o texto em linhas
+    centered_text = ""
+    
+    for line in lines:
+        # Calcula o número de espaços para centralizar
+        spaces = (terminal_width - len(line)) // 2
+        centered_text += " " * spaces + line + "\n"
+    
+    return centered_text
+
 # Adiciona a impressão do título no início do código
 def print_title():
     title = """
@@ -26,7 +39,7 @@ def print_title():
  | |__| | |____| | \ \  / ____ \| |__| | |__| | | \ \    | |\  |_| |_   | |  | | \ \| |__| |
   \_____|______|_|  \_\/_/    \_\_____/ \____/|_|  \_\   |_| \_|_____|  |_|  |_|  \_\\____/ 
     """
-    print(alternating_colors(title))
+    print(center_text(alternating_colors(title)))  # Centraliza o título
 
 # Exibe o título ao iniciar o programa
 print_title()
@@ -87,22 +100,22 @@ class SapphireGen:
                 ).status_code
                 if req == 200:
                     print(
-                        alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | válido")
+                        center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | válido"))
                     )
                     open("./data/valid.txt", "a").write(f"{code}\n")
                 if req == 404:
                     print(
-                        alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | inválido")
+                        center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | inválido"))
                     )
                 if req == 429:
                     print(
-                        alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | taxa limitada")
+                        center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | taxa limitada"))
                     )
             except Exception as e:
-                print(alternating_colors(f"[{strftime('%H:%M', localtime())}] {e}"))
+                print(center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] {e}")))
 
         print(
-            alternating_colors(f"[{strftime('%H:%M', localtime())}] Verificação concluída com sucesso: {this.codes} códigos.")
+            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Verificação concluída com sucesso: {this.codes} códigos."))
         )
         sleep(1.5)
         os.system("clear")
@@ -110,18 +123,18 @@ class SapphireGen:
 if __name__ == "__main__":
     while True:
         code_type = input(
-            alternating_colors(f"[{strftime('%H:%M', localtime())}] Tipo de Código (boost, classic): ")
+            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Tipo de Código (boost, classic): "))
         )
         prox = input(
-            alternating_colors(f"[{strftime('%H:%M', localtime())}] Usar proxies? (True, False): ")
+            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Usar proxies? (True, False): "))
         )
         if prox == "True":
             scrape_proxy = input(
-                alternating_colors(f"[{strftime('%H:%M', localtime())}] Coletar proxies? (True, False): ")
+                center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Coletar proxies? (True, False): "))
             )
         else:
             scrape_proxy = False
         codes = input(
-            alternating_colors(f"[{strftime('%H:%M', localtime())}] Número de códigos: ")
+            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Número de códigos: "))
         )
         SapphireGen(code_type, prox, codes).generate(scrape=scrape_proxy)
