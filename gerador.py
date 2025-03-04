@@ -8,9 +8,9 @@ import os
 # Inicializa o colorama
 init(autoreset=True)
 
-# Função para alternar as cores
+# Função para alternar as cores (magenta, azul e branco)
 def alternating_colors(text):
-    color_sequence = [Fore.MAGENTA, Fore.BLACK, Fore.BLUE]  # Rosa, Preto, Azul
+    color_sequence = [Fore.MAGENTA, Fore.BLUE, Fore.WHITE]  # Magenta, Azul, Branco
     result = ""
     for i, char in enumerate(text):
         result += color_sequence[i % len(color_sequence)] + char
