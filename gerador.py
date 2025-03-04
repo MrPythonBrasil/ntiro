@@ -12,6 +12,20 @@ import random
 import string
 import os
 
+# Adiciona a impressão do título no início do código
+def print_title():
+    print("""
+   _____ ______ _____            _____   ____  _____      _   _ _____ _______ _____   ____  
+  / ____|  ____|  __ \     /\   |  __ \ / __ \|  __ \    | \ | |_   _|__   __|  __ \ / __ \ 
+ | |  __| |__  | |__) |   /  \  | |  | | |  | | |__) |   |  \| | | |    | |  | |__) | |  | |
+ | | |_ |  __| |  _  /   / /\ \ | |  | | |  | |  _  /    | . ` | | |    | |  |  _  /| |  | |
+ | |__| | |____| | \ \  / ____ \| |__| | |__| | | \ \    | |\  |_| |_   | |  | | \ \| |__| |
+  \_____|______|_|  \_\/_/    \_\_____/ \____/|_|  \_\   |_| \_|_____|  |_|  |_|  \_\\____/ 
+    """)
+    
+# Exibe o título ao iniciar o programa
+print_title()
+
 class SapphireGen:
     def __init__(this, code_type: str, prox=None, codes=None):
         this.type = code_type
