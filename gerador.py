@@ -1,5 +1,5 @@
 from time import localtime, strftime, sleep
-from colorama import Fore, init
+from colorama import init, Fore
 import requests
 import random
 import string
