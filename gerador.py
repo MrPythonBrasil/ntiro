@@ -8,133 +8,89 @@ import os
 # Inicializa o colorama
 init(autoreset=True)
 
-# Função para alternar as cores (magenta, azul e cinza claro)
-def alternating_colors(text):
-    color_sequence = [Fore.MAGENTA, Fore.BLUE, Fore.LIGHTWHITE_EX]  # Magenta, Azul, Cinza Claro
-    result = ""
-    for i, char in enumerate(text):
-        result += color_sequence[i % len(color_sequence)] + char
-    return result
+# Função para gerar um código aleatório baseado no tipo
+def generate_code(code_type):
+    if code_type == "boost":
+        return "".join(random.choices(string.ascii_letters + string.digits, k=24))
+    else:
+        return "".join(random.choices(string.ascii_letters + string.digits, k=16))
 
-# Função para centralizar o texto
-def center_text(text):
-    terminal_width = os.get_terminal_size().columns  # Obtém a largura do terminal
-    lines = text.split("\n")  # Divide o texto em linhas
-    centered_text = ""
-    
-    for line in lines:
-        # Calcula o número de espaços para centralizar
-        spaces = (terminal_width - len(line)) // 2
-        centered_text += " " * spaces + line + "\n"
-    
-    return centered_text
+# Função para exibir uma mensagem de boas-vindas com título "NITRO"
+def print_welcome_message():
+    print(Fore.WHITE + """
+  NNN   NNN III  TTTTT  RRRRR   OOO
+  NNNN  NNN  I     T    R   R  O   O
+  NN NN NNN  I     T    RRRRR  O   O
+  NN  NNNNN  I     T    R  R   O   O
+  NN   NNNN  III    T    R   R   OOO
+    """)
+    print(Fore.WHITE + "\nBem-vindo ao gerador de códigos! Vamos tornar isso rápido e fácil para você. 😊\n")
 
-# Adiciona a impressão do título no início do código
-def print_title():
-    title = """
-   _____ ______ _____            _____   ____  _____      _   _ _____ _______ _____   ____  
-  / ____|  ____|  __ \     /\   |  __ \ / __ \|  __ \    | \ | |_   _|__   __|  __ \ / __ \ 
- | |  __| |__  | |__) |   /  \  | |  | | |  | | |__) |   |  \| | | |    | |  | |__) | |  | |
- | | |_ |  __| |  _  /   / /\ \ | |  | | |  | |  _  /    | . ` | | |    | |  |  _  /| |  | |
- | |__| | |____| | \ \  / ____ \| |__| | |__| | | \ \    | |\  |_| |_   | |  | | \ \| |__| |
-  \_____|______|_|  \_\/_/    \_\_____/ \____/|_|  \_\   |_| \_|_____|  |_|  |_|  \_\\____/ 
-    """
-    print(center_text(alternating_colors(title)))  # Centraliza o título
+# Função para verificar o status do código
+def verify_code(code, proxies=None):
+    url = f"https://discordapp.com/api/entitlements/gift-codes/{code}"
+    try:
+        response = requests.get(url, proxies=proxies, timeout=10)
+        if response.status_code == 200:
+            return "Válido", Fore.GREEN
+        elif response.status_code == 404:
+            return "Inválido", Fore.RED
+        elif response.status_code == 429:
+            return "Taxa limitada. Oops, vamos dar uma pausa!", Fore.YELLOW
+        else:
+            return "Erro desconhecido, algo deu errado... 😕", Fore.WHITE
+    except Exception as e:
+        return f"Erro ao verificar código: {str(e)}. Tente novamente mais tarde!", Fore.WHITE
 
-# Exibe o título ao iniciar o programa
-print_title()
+# Função principal para gerenciar a entrada e exibição de códigos
+def run_code_generator():
+    while True:
+        print_welcome_message()
 
-class SapphireGen:
-    def __init__(this, code_type: str, prox=None, codes=None):
-        this.type = code_type
-        this.codes = codes
-        this.proxies = prox
-        this.session = requests.Session()
-        this.prox_api = (
-            "https://raw.githubusercontent.com/TheSpeedX/PROXY-List/master/http.txt"
-        )
+        # Tipo de código
+        code_type = input(Fore.WHITE + "Escolha o tipo de código que você quer gerar (boost ou classic): ").strip().lower()
+        if code_type not in ["boost", "classic"]:
+            print(Fore.WHITE + "Ops! Parece que você digitou algo errado. Tente 'boost' ou 'classic'. 🤔")
+            continue
 
-    def __proxies__(this):
-        req = this.session.get(this.prox_api).text
-        if req:
-            open("./data/proxies.txt", "a+").truncate(0)
-            for proxy in req.split("\n"):
-                proxy = proxy.strip()
-                proxy = f"https://{proxy}"
-                open("./data/proxies.txt", "a").write(f"{proxy}\n")
+        # Usar proxies
+        use_proxies = input(Fore.WHITE + "Você gostaria de usar proxies para gerar os códigos? (Sim / Não): ").strip().lower()
+        proxies = None
+        if use_proxies == "sim":
+            proxies = input(Fore.WHITE + "Digite o proxy que deseja usar (ou pressione Enter para não usar nenhum): ").strip()
+            if proxies:
+                proxies = {"http": proxies}
+            else:
+                proxies = None
 
-    def generate(this, scrape=None):
-        if scrape == "True":
-            this.__proxies__()
+        # Número de códigos
+        try:
+            num_codes = int(input(Fore.WHITE + "Quantos códigos você quer gerar? "))
 
-        os.system("clear")
-        for _ in range(int(this.codes)):
-            try:
-                if this.proxies == "True":
-                    prox = {
-                        "http": random.choice(
-                            open("./data/proxies.txt", "r").read().splitlines()
-                        )
-                    }
-                else:
-                    prox = None
+            if num_codes <= 0:
+                print(Fore.WHITE + "Hum, parece que você não quer gerar nenhum código... 😅")
+                continue
+        except ValueError:
+            print(Fore.WHITE + "Ei, você precisa digitar um número válido. 😅")
+            continue
 
-                if this.type == "boost":
-                    code = "".join(
-                        [
-                            random.choice(string.ascii_letters + string.digits)
-                            for i in range(24)
-                        ]
-                    )
-                else:
-                    code = "".join(
-                        [
-                            random.choice(string.ascii_letters + string.digits)
-                            for i in range(16)
-                        ]
-                    )
-                req = this.session.get(
-                    f"https://discordapp.com/api/entitlements/gift-codes/{code}",
-                    proxies=prox,
-                    timeout=10,
-                ).status_code
-                if req == 200:
-                    print(
-                        center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | válido"))
-                    )
-                    open("./data/valid.txt", "a").write(f"{code}\n")
-                if req == 404:
-                    print(
-                        center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | inválido"))
-                    )
-                if req == 429:
-                    print(
-                        center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] discord.gift/{code} | taxa limitada"))
-                    )
-            except Exception as e:
-                print(center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] {e}")))
+        # Gerando e verificando os códigos
+        print(Fore.WHITE + f"\nEstamos gerando {num_codes} códigos para você... Vamos lá! 💪\n")
+        for _ in range(num_codes):
+            code = generate_code(code_type)
+            status, color = verify_code(code, proxies)
+            print(color + f"Código gerado: {code} | Status: {status}")
+            if color == Fore.GREEN:
+                with open("valid_codes.txt", "a") as valid_file:
+                    valid_file.write(f"{code}\n")
+                    print(Fore.GREEN + f"🎉 Código válido! Adicionamos ao arquivo 'valid_codes.txt'.\n")
+            sleep(1)
 
-        print(
-            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Verificação concluída com sucesso: {this.codes} códigos."))
-        )
-        sleep(1.5)
-        os.system("clear")
+        # Perguntar se o usuário quer gerar mais códigos
+        repeat = input(Fore.WHITE + "\nQuer gerar mais códigos? (Sim / Não): ").strip().lower()
+        if repeat != "sim":
+            print(Fore.WHITE + "Tudo bem! Obrigado por usar nosso gerador de códigos. Até a próxima! 👋")
+            break
 
 if __name__ == "__main__":
-    while True:
-        code_type = input(
-            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Tipo de Código (boost, classic): "))
-        )
-        prox = input(
-            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Usar proxies? (True, False): "))
-        )
-        if prox == "True":
-            scrape_proxy = input(
-                center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Coletar proxies? (True, False): "))
-            )
-        else:
-            scrape_proxy = False
-        codes = input(
-            center_text(alternating_colors(f"[{strftime('%H:%M', localtime())}] Número de códigos: "))
-        )
-        SapphireGen(code_type, prox, codes).generate(scrape=scrape_proxy)
+    run_code_generator()
